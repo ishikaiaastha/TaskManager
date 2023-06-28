@@ -1,14 +1,16 @@
 const taskModel = require ("../Models/task")
 
 const createTask = async (req, res) =>{
-    const {taskname, description, taskduration, start_time} = req.body;
+    const {taskname, description, taskduration, start_time, Status} = req.body;
 
     const newTask = new taskModel({
         taskname: taskname,
         description: description,
         taskduration: taskduration,
         start_time: start_time,
-        userId : req.userId 
+        userId : req.userId,
+        categoryId: req.body.categoryId,
+        Status: Status
     })
 
     try {
@@ -70,9 +72,43 @@ const getTask = async (req, res) =>{
     
 }
 
+const getTasksByStatus = async (req, res) =>{
+    try{
+       const tasksCountByStatus = await taskModel.aggregate([
+            //{$match: {userId: req.userId}},
+            {$group: { _id: '$Status', count: {$sum:1} }}
+        ]) 
+
+        res.send(tasksCountByStatus)
+    }
+    catch(error){
+        console.log(error)
+        res.status(500).json({message: "Something went wrong"}) 
+    }
+
+}
+
+const getTasksByStatusAndCategory = async (req, res) =>{
+    try{
+       const tasksCountByStatusAndCategory = await taskModel.aggregate([
+            //{$match: {userId: req.userId}},
+            {$group: { _id: {status: '$Status', category: '$categoryId'}, count: {$sum:1} }}
+        ]) 
+
+        res.send(tasksCountByStatusAndCategory)
+    }
+    catch(error){
+        console.log(error)
+        res.status(500).json({message: "Something went wrong"}) 
+    }
+
+}
+
 module.exports = {
     createTask,
     updateTask,
     deleteTask,
-    getTask
+    getTask,
+    getTasksByStatus,
+    getTasksByStatusAndCategory
 }

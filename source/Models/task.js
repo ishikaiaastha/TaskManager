@@ -26,11 +26,20 @@ const TaskSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true
-    }
-    
-    
+    },
 
+    categoryId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+        required: true
+        //enum: ['Study', 'Sports', 'Leisure', 'Food', 'Entertainment']
+    },
     
+    Status:{
+        type: String,
+        enum: ['ToDo', 'InProgress', 'Done'],
+        default: 'ToDo'
+    }   
 
 },{timestamps: true })
 

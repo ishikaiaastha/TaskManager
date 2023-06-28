@@ -3,7 +3,8 @@ const userRouter = require("./Routes/userRoutes");
 const taskRouter = require("./Routes/taskRoutes");
 const app = express();
 
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+const categoryRouter = require("./Routes/categoryRoutes");
 
 app.use(express.json())
 
@@ -14,12 +15,14 @@ app.use(express.json())
 
 app.use("/users", userRouter)
 app.use("/task", taskRouter)
+app.use("/category", categoryRouter)
+
 
 mongoose.connect("mongodb+srv://admin:91HytN6nmd4DhBwh@cluster0.jhhduzr.mongodb.net/?retryWrites=true&w=majority")
 .then(() =>{
     app.listen(3000, () => {
         console.log("server started at port no. 3000");
-    });
+    })
 
 })
 
