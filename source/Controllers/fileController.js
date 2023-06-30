@@ -16,13 +16,13 @@ const upload = multer({
 })
 
 const uploadFile = async  (req, res)=>{
-    //const logicalPath  = req.body;
+    const {path}  = req.body;
 
     const newFile = new fileModel({
         filename: req.file.filename,
-        pathname: req.file.destination,
+        pathname: req.file.destination ,
         userId: req.userId,
-        
+        logicalPath: path
 
     })
 
@@ -47,9 +47,30 @@ const getFiles = async (req, res) =>{
     }
 }
 
-module.exports ={
+const searchFile = async (req, res) => {
+    const {path} = req.body
+
+    try {
+        const file = await fileModel.find({logicalPath: path})
+        if(!file)
+        {
+            res.status(500).json({message: "File not found"})
+        }  
+        else 
+        {
+            res.status(200).send({message: "File found", Details: file})
+        }
+    } 
+    catch (error) {
+        console.log(error)
+        res.status(500).json({message: "something went wrong, could not find file"})
+    }
+}
+
+module.exports = {
     uploadFile,
     upload,
-    getFiles
+    getFiles,
+    searchFile
 
 }
