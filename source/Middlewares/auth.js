@@ -9,8 +9,19 @@ const auth = (req, res, next) =>{
 
         if (token) {
             token = token.split(" ")[1]
-            let user = jwt.verify(token, SECRET_KEY)
-            req.userId = user.id        
+            jwt.verify(token, SECRET_KEY, (err,user)=>{
+                if(err){
+
+                    if(err.name === 'TokenExpiredError' ){
+                        return res.status(401).json({message: "Token has expired"})                  
+                    }
+                    else{
+                        res.status(401).json({message: "Invalid user"})
+                    }
+                }
+                req.userId = user.id    
+            })
+                    
             
         } 
         else {
