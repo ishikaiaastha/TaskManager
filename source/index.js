@@ -1,5 +1,5 @@
 const express = require ("express");
-//const multer = require ('multer')
+const rateLimit = require("express-rate-limit");
 const userRouter = require("./Routes/userRoutes");
 const taskRouter = require("./Routes/taskRoutes");
 const app = express();
@@ -10,17 +10,19 @@ const fileRouter = require("./Routes/fileRoutes");
 
 app.use(express.json())
 
-/*app.use((req, res, next) => {
-    console.log("HTTP method -" + req.method + ", URL - " + req.url)
-    next();
-}) */
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000,
+    max: 10,
+    message: " Too many requests, Don't create tasks, try after 1 minute. ",
+
+})
+
+app.use("/task", limiter)
 
 app.use("/users", userRouter)
 app.use("/task", taskRouter)
 app.use("/category", categoryRouter)
 app.use("/file", fileRouter )
-
-
 
 mongoose.connect("mongodb+srv://admin:91HytN6nmd4DhBwh@cluster0.jhhduzr.mongodb.net/?retryWrites=true&w=majority")
 .then(() =>{

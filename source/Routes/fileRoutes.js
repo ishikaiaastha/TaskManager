@@ -3,9 +3,6 @@ const { upload, uploadFile, getFiles, searchFile } = require("../Controllers/fil
 const auth = require("../Middlewares/auth")
 const fileRouter = express.Router()
 
-
-//app.post('/upload', upload.single('file'), (req, res) => {
-
 fileRouter.post('/upload', auth , upload.single('file'), uploadFile)
 fileRouter.get('/getAllFiles', getFiles)
 fileRouter.get('/search', searchFile)
